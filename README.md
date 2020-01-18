@@ -64,7 +64,7 @@ No configuration should be needed.   Simply run it...
 ```
 python3 lwproxy.py &
 ```
-You will need to run this as a service to survive reboots etc.
+You will need to run this as a service to survive reboots etc.  I've created a ```systemctl``` template service description in ```lwproxy.service```.
 ## Test
 Restart hass.  (A restart is required, simply re-reading config is not sufficient)
 
