@@ -62,7 +62,7 @@ class LWRF_TRV(ClimateDevice):
         """Poll the Proxy"""
         return True
 
-    async def async_update(self):
+    def update(self):
         """Communicate with a Lightwave RTF Proxy to get state"""
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
@@ -76,8 +76,8 @@ class LWRF_TRV(ClimateDevice):
                     self._current_temperature = j["cTemp"]
                 if "cTarg" in j.keys():
                     self._target_temperature = j["cTarg"]
-                if "state" in j.keys():
-                    if j["state"] == "run":
+                if "output" in j.keys():
+                    if int(j["output"]) > 0:
                         self._hvac_mode = HVAC_MODE_HEAT
                     else:
                         self._hvac_mode = HVAC_MODE_OFF 
