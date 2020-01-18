@@ -64,12 +64,7 @@ No configuration should be needed.   Simply run it...
 ```
 python3 lwproxy.py &
 ```
-You will need to configure this so it survives reboots etc.   I personally use "forever".
-```
-apt-get install forever
-forever start python3 lwproxy.py
-```
-
+You will need to run this as a service to survive reboots etc.
 ## Test
 Restart hass.  (A restart is required, simply re-reading config is not sufficient)
 
