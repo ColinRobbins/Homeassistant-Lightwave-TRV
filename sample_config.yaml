@@ -1,0 +1,15 @@
+lightwave:
+  host: 192.168.10.10
+  trv_proxy_ip: 127.0.0.1
+  trv_proxy_port: 7878
+  lights:
+    R99D1:
+      name: Bedroom Light
+  trv:
+    R1Dh:
+      name: Bedroom TRV
+      serial: E84902
+  battery:
+    R1Dh:
+      name: Bedroom TRV battery
+      serial: E84902
