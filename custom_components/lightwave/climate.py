@@ -1,20 +1,22 @@
 """Support for LightwaveRF TRVs."""
-import asyncio
 import json
 import logging
 import socket
 
-from homeassistant.components.climate import (DEFAULT_MAX_TEMP,
-                                              DEFAULT_MIN_TEMP, HVAC_MODE_HEAT,
-                                              HVAC_MODE_OFF,
-                                              SUPPORT_TARGET_TEMPERATURE,
-                                              ClimateDevice)
-from homeassistant.components.climate.const import (CURRENT_HVAC_HEAT, 
-                                              CURRENT_HVAC_OFF)
+from homeassistant.components.climate import (
+    DEFAULT_MAX_TEMP,
+    DEFAULT_MIN_TEMP,
+    HVAC_MODE_HEAT,
+    HVAC_MODE_OFF,
+    SUPPORT_TARGET_TEMPERATURE,
+    ClimateDevice,
+)
+from homeassistant.components.climate.const import CURRENT_HVAC_HEAT, CURRENT_HVAC_OFF
 from homeassistant.const import ATTR_TEMPERATURE, CONF_NAME, TEMP_CELSIUS
 from . import LIGHTWAVE_LINK, LIGHTWAVE_TRV_PROXY, LIGHTWAVE_TRV_PROXY_PORT
 
-logger = logging.getLogger(__name__)
+_LOGGER = logging.getLogger(__name__)
+
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     """Find and return LightWave lights."""
@@ -28,16 +30,19 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
     for device_id, device_config in discovery_info.items():
         name = device_config[CONF_NAME]
-        serial = device_config['serial']
-        trv.append(LWRF_TRV(name, device_id, lwlink, serial, trv_proxy_ip, trv_proxy_port))
+        serial = device_config["serial"]
+        trv.append(
+            LightwareTrv(name, device_id, lwlink, serial, trv_proxy_ip, trv_proxy_port)
+        )
 
     async_add_entities(trv)
 
-class LWRF_TRV(ClimateDevice):
+
+class LightwareTrv(ClimateDevice):
     """Representation of a LightWaveRF TRV."""
 
     def __init__(self, name, device_id, lwlink, serial, trv_proxy_ip, trv_proxy_port):
-        """Initialize LWRF_TRV entity."""
+        """Initialize LightwaveTrv entity."""
         self._name = name
         self._device_id = device_id
         self._state = None
@@ -61,18 +66,18 @@ class LWRF_TRV(ClimateDevice):
 
     @property
     def should_poll(self):
-        """Poll the Proxy"""
+        """Poll the Proxy."""
         return True
 
     def update(self):
-        """Communicate with a Lightwave RTF Proxy to get state"""
+        """Communicate with a Lightwave RTF Proxy to get state."""
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
                 sock.settimeout(2.0)
-                msg = self._serial.encode('UTF-8')
-                sock.sendto(msg, (self._proxy_ip,self._proxy_port))
-                response, addr = sock.recvfrom(1024)
-                msg =response.decode()
+                msg = self._serial.encode("UTF-8")
+                sock.sendto(msg, (self._proxy_ip, self._proxy_port))
+                response, dummy = sock.recvfrom(1024)
+                msg = response.decode()
                 j = json.loads(msg)
                 if "cTemp" in j.keys():
                     self._current_temperature = j["cTemp"]
@@ -84,10 +89,16 @@ class LWRF_TRV(ClimateDevice):
                     else:
                         self._hvac_action = CURRENT_HVAC_OFF
                 if "error" in j.keys():
-                    logger.warning("TRV proxy error: %s",j["error"])
+                    _LOGGER.warning("TRV proxy error: %s", j["error"])
 
-        except Exception as ex:
-            logger.warning("TRV updater error %s",ex)
+        except socket.timeout:
+            _LOGGER.warning("TRV proxy not responing")
+
+        except socket.error as ex:
+            _LOGGER.warning("TRV proxy error %s", ex)
+
+        except json.JSONDecodeError:
+            _LOGGER.warning("TRV proxy JSON error")
 
     @property
     def name(self):
@@ -96,50 +107,52 @@ class LWRF_TRV(ClimateDevice):
 
     @property
     def current_temperature(self):
-        """Current room temperature"""
+        """Property giving the current room temperature."""
         return self._current_temperature
 
     @property
     def target_temperature(self):
-        """target room temperature"""
+        """Target room temperature."""
         return self._target_temperature
 
     @property
     def hvac_modes(self):
-        """HVAC modes"""
+        """HVAC modes."""
         return [HVAC_MODE_HEAT, HVAC_MODE_OFF]
 
     @property
     def hvac_mode(self):
-        """HVAC mode """
+        """HVAC mode."""
         return self._hvac_mode
 
     @property
-    def hvac_action (self):
-        """HVAC action """
+    def hvac_action(self):
+        """HVAC action."""
         return self._hvac_action
 
     @property
     def min_temp(self):
-        """Min Temp"""
+        """Min Temp."""
         return self._min_temp
 
     @property
     def max_temp(self):
-        """Max Temp"""
+        """Max Temp."""
         return self._max_temp
 
     @property
     def temperature_unit(self):
-        """Set temperature unit"""
+        """Set temperature unit."""
         return TEMP_CELSIUS
 
     async def async_set_temperature(self, **kwargs):
         """Set TRV target temperature."""
         if ATTR_TEMPERATURE in kwargs:
             self._target_temperature = kwargs[ATTR_TEMPERATURE]
-        self._lwlink.set_temperature(self._device_id, self._target_temperature,self._name)
+        self._lwlink.set_temperature(
+            self._device_id, self._target_temperature, self._name
+        )
         self.async_schedule_update_ha_state()
 
     async def async_set_hvac_mode(self, hvac_mode):
-        """Set HVAC Mode for TRV"""
+        """Set HVAC Mode for TRV."""
