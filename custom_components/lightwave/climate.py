@@ -1,4 +1,4 @@
-"""Support for LightwaveRF lights."""
+"""Support for LightwaveRF TRVs."""
 import asyncio
 import json
 import logging
@@ -9,8 +9,9 @@ from homeassistant.components.climate import (DEFAULT_MAX_TEMP,
                                               HVAC_MODE_OFF,
                                               SUPPORT_TARGET_TEMPERATURE,
                                               ClimateDevice)
+from homeassistant.components.climate.const import (CURRENT_HVAC_HEAT, 
+                                              CURRENT_HVAC_OFF)
 from homeassistant.const import ATTR_TEMPERATURE, CONF_NAME, TEMP_CELSIUS
-
 from . import LIGHTWAVE_LINK, LIGHTWAVE_TRV_PROXY, LIGHTWAVE_TRV_PROXY_PORT
 
 logger = logging.getLogger(__name__)
@@ -44,8 +45,9 @@ class LWRF_TRV(ClimateDevice):
         self._min_temp = DEFAULT_MIN_TEMP
         self._current_temperature = None
         self._target_temperature = None
-        self._temperature_unit = TEMP_CELSIUS 
-        self._hvac_mode = None
+        self._temperature_unit = TEMP_CELSIUS
+        self._hvac_mode = HVAC_MODE_HEAT
+        self._hvac_action = None
         self._lwlink = lwlink
         self._battery = None
         self._serial = serial
@@ -67,7 +69,7 @@ class LWRF_TRV(ClimateDevice):
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
                 sock.settimeout(2.0)
-                msg = self._serial.encode('UTF-8')    
+                msg = self._serial.encode('UTF-8')
                 sock.sendto(msg, (self._proxy_ip,self._proxy_port))
                 response, addr = sock.recvfrom(1024)
                 msg =response.decode()
@@ -78,12 +80,12 @@ class LWRF_TRV(ClimateDevice):
                     self._target_temperature = j["cTarg"]
                 if "output" in j.keys():
                     if int(j["output"]) > 0:
-                        self._hvac_mode = HVAC_MODE_HEAT
+                        self._hvac_action = CURRENT_HVAC_HEAT
                     else:
-                        self._hvac_mode = HVAC_MODE_OFF 
+                        self._hvac_action = CURRENT_HVAC_OFF
                 if "error" in j.keys():
                     logger.warning("TRV proxy error: %s",j["error"])
-      
+
         except Exception as ex:
             logger.warning("TRV updater error %s",ex)
 
@@ -113,6 +115,11 @@ class LWRF_TRV(ClimateDevice):
         return self._hvac_mode
 
     @property
+    def hvac_action (self):
+        """HVAC action """
+        return self._hvac_action
+
+    @property
     def min_temp(self):
         """Min Temp"""
         return self._min_temp
@@ -131,7 +138,7 @@ class LWRF_TRV(ClimateDevice):
         """Set TRV target temperature."""
         if ATTR_TEMPERATURE in kwargs:
             self._target_temperature = kwargs[ATTR_TEMPERATURE]
-        self._lwlink.set_temperature(self._device_id, self._target_temperature, self._name)
+        self._lwlink.set_temperature(self._device_id, self._target_temperature,self._name)
         self.async_schedule_update_ha_state()
 
     async def async_set_hvac_mode(self, hvac_mode):

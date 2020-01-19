@@ -1,4 +1,4 @@
-"""Support for LightwaveRF TRV - Battery."""
+"""Support for LightwaveRF TRV - Assocaited Battery."""
 import asyncio
 import json
 import logging
@@ -6,7 +6,6 @@ import socket
 
 from homeassistant.const import CONF_NAME
 from homeassistant.helpers.entity import Entity
-
 from . import LIGHTWAVE_LINK, LIGHTWAVE_TRV_PROXY, LIGHTWAVE_TRV_PROXY_PORT
 
 logger = logging.getLogger(__name__)
@@ -38,6 +37,7 @@ class LWRF_Battery(Entity):
         self._state = None
         self._serial = serial
         self._device_class = "battery"
+        self._unit_of_measurement = '%'
         self._proxy_ip = trv_proxy_ip
         self._proxy_port = trv_proxy_port
 
@@ -61,6 +61,11 @@ class LWRF_Battery(Entity):
         """Return the state of the sensor."""
         return self._state
 
+    @property
+    def unit_of_measurement(self):
+        """Return the state of the sensor."""
+        return self._unit_of_measurement
+
     def update(self):
         """Communicate with a Lightwave RTF Proxy to get state"""
         try:
@@ -72,7 +77,8 @@ class LWRF_Battery(Entity):
                 msg =response.decode()
                 j = json.loads(msg)
                 if "batt" in j.keys():
-                    self._state = j["batt"]
+                    """convert the voltage to a rough percentage"""
+                    self._state = int((j["batt"] - 2.22) * 110)
                 if "error" in j.keys():
                     logger.warning("TRV proxy error: %s",j["error"])
 
