@@ -69,7 +69,7 @@ class LWLink():
 
     def set_temperature(self, device_id,  temp, name):
         """Create the message to set the trv target temp."""
-        msg = '321,!%sF*tP%s|Set Target|%s' % (device_id, round(temp,1), name)
+        msg = '!%sF*tP%s|Set Target|%s' % (device_id, round(temp,1), name)
         self._send_message(msg)
 
     def _send_queue(self):
