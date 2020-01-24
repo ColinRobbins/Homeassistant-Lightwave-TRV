@@ -81,11 +81,9 @@ class LightwareTrv(ClimateDevice):
                 msg = response.decode()
                 j = json.loads(msg)
                 if "cTemp" in j.keys():
-                    print ("Proxy cTemp says " , j["cTemp"])
                     self._current_temperature = j["cTemp"]
                 if "cTarg" in j.keys():
                     if self._inhibit == 0:
-                        print ("Proxy cTarg says " , j["cTarg"])
                         self._target_temperature = j["cTarg"]
                     else:
                         # Done the job - use proxy next iteration
@@ -120,12 +118,10 @@ class LightwareTrv(ClimateDevice):
     @property
     def target_temperature(self):
         """Target room temperature."""
-        print ("show TT ")
         if self._inhibit > 0:
             # if we get an update before the new temp has
             # propagated, the GUI target temp is set back to the
             # old target, showing a false reading temporarily
-            print ("Inhibit ", self._inhibit)
             self._target_temperature = self._inhibit
         return self._target_temperature
 
@@ -164,7 +160,6 @@ class LightwareTrv(ClimateDevice):
         if ATTR_TEMPERATURE in kwargs:
             self._target_temperature = kwargs[ATTR_TEMPERATURE]
             self._inhibit = self._target_temperature
-            print ("set to " , self._target_temperature)
         self._lwlink.set_temperature(
             self._device_id, self._target_temperature, self._name
         )
