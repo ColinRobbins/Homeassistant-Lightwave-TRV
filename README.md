@@ -33,18 +33,8 @@ lightwave:
       name: Bedroom Light
   trv:				
     R1Dh:			# The ID of the TRV.  
-				# This needs to be precise, see the existing HA documents on Lightwave
-				# on how to find this
       name: Bedroom TRV
       serial: E84902		# Serial number of the TRV - found in the Lightwave App, or web site
-```
-If you wish to also get access to the TRV battery status, the add the following.
-The identifier (R1Dh) and serial should be *identical* to the TRV config, except for the name:
-```
-  battery:			# 
-    R1Dh:
-      name: Bedroom TRV battery
-      serial: E84902
 ```
 ## lightwave.py
 A modification is required to 

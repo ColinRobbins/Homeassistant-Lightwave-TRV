@@ -37,14 +37,6 @@ CONFIG_SCHEMA = vol.Schema(
                             }
                         )
                     },
-                    vol.Optional("battery", default={}): {
-                        cv.string: vol.Schema(
-                            {
-                                vol.Required(CONF_NAME): cv.string,
-                                vol.Required("serial"): cv.string,
-                            }
-                        )
-                    },
                 },
             )
         )
@@ -86,11 +78,8 @@ async def async_setup(hass, config):
         hass.async_create_task(
             async_load_platform(hass, "climate", DOMAIN, trvs, config)
         )
-
-    battery = config[DOMAIN]["battery"]
-    if battery:
         hass.async_create_task(
-            async_load_platform(hass, "sensor", DOMAIN, battery, config)
+            async_load_platform(hass, "sensor", DOMAIN, trvs, config)
         )
-
+    
     return True

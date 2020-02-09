@@ -17,7 +17,6 @@ from . import LIGHTWAVE_LINK, LIGHTWAVE_TRV_PROXY, LIGHTWAVE_TRV_PROXY_PORT
 
 _LOGGER = logging.getLogger(__name__)
 
-
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     """Find and return LightWave lights."""
     if not discovery_info:
@@ -32,13 +31,12 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         name = device_config[CONF_NAME]
         serial = device_config["serial"]
         trv.append(
-            LightwareTrv(name, device_id, lwlink, serial, trv_proxy_ip, trv_proxy_port)
+            LightwaveTrv(name, device_id, lwlink, serial, trv_proxy_ip, trv_proxy_port)
         )
 
     async_add_entities(trv)
 
-
-class LightwareTrv(ClimateDevice):
+class LightwaveTrv(ClimateDevice):
     """Representation of a LightWaveRF TRV."""
 
     def __init__(self, name, device_id, lwlink, serial, trv_proxy_ip, trv_proxy_port):
@@ -51,6 +49,7 @@ class LightwareTrv(ClimateDevice):
         self._current_temperature = None
         self._target_temperature = None
         self._temperature_unit = TEMP_CELSIUS
+        self._target_temperature_step = 0.5
         self._hvac_mode = HVAC_MODE_HEAT
         self._hvac_action = None
         self._lwlink = lwlink
@@ -85,14 +84,19 @@ class LightwareTrv(ClimateDevice):
                 if "cTarg" in j.keys():
                     if self._inhibit == 0:
                         self._target_temperature = j["cTarg"]
-                        if j["cTarg"] == 0:  # off
-                           self._target_temperature = None
-                        if j["cTarg"] >= 40:  # Call for heat mode, or TRV in a fixed position
-                           self._target_temperature = None
+                        if j["cTarg"] == 0:  
+                            # TRV off
+                            self._target_temperature = None
+                        if j["cTarg"] >= 40:  
+                            # Call for heat mode, or TRV in a fixed position
+                            self._target_temperature = None
                         self._target_temperature = j["cTarg"]
                     else:
                         # Done the job - use proxy next iteration
                         self._inhibit = 0
+                if "batt" in j.keys():
+                    # convert the voltage to a rough percentage
+                    self._battery = int((j["batt"] - 2.22) * 110)
                 if "output" in j.keys():
                     if int(j["output"]) > 0:
                         self._hvac_action = CURRENT_HVAC_HEAT
@@ -109,6 +113,14 @@ class LightwareTrv(ClimateDevice):
 
         except json.JSONDecodeError:
             _LOGGER.warning("TRV proxy JSON error")
+
+    @property
+    def device_state_attributes(self):
+        """Return the device state attributes."""
+        return {
+            "Battery Level": self._battery,
+            "Device Type": "LightwaveRF TRV",
+        }
 
     @property
     def name(self):
@@ -158,7 +170,12 @@ class LightwareTrv(ClimateDevice):
     @property
     def temperature_unit(self):
         """Set temperature unit."""
-        return TEMP_CELSIUS
+        return self._temperature_unit
+
+    @property
+    def target_temperature_step(self):
+        """Set temperature step."""
+        return self._target_temperature_step
 
     def set_temperature(self, **kwargs):
         """Set TRV target temperature."""
