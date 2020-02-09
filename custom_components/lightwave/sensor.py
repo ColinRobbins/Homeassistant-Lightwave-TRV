@@ -5,12 +5,15 @@ import socket
 
 from homeassistant.const import CONF_NAME
 from homeassistant.helpers.entity import Entity
+
 from . import LIGHTWAVE_TRV_PROXY, LIGHTWAVE_TRV_PROXY_PORT
 
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+async def async_setup_platform(hass, config,
+                               async_add_entities,
+                               discovery_info=None):
     """Find and return battery."""
     if not discovery_info:
         return
@@ -24,7 +27,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         name = device_config[CONF_NAME]
         serial = device_config["serial"]
         batt.append(
-            LightwaveBattery(name, device_id, serial, trv_proxy_ip, trv_proxy_port)
+            LightwaveBattery(name, device_id, serial,
+                             trv_proxy_ip, trv_proxy_port)
         )
 
     async_add_entities(batt)
@@ -33,7 +37,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 class LightwaveBattery(Entity):
     """Lightwave TRV Battery."""
 
-    def __init__(self, name, device_id, serial, trv_proxy_ip, trv_proxy_port):
+    def __init__(self, name, device_id,
+                 serial, trv_proxy_ip, trv_proxy_port):
         """Initialize the Lightwave Trv battery sensor."""
         self._name = name
         self._device_id = device_id
