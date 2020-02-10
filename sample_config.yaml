@@ -9,7 +9,3 @@ lightwave:
     R1Dh:
       name: Bedroom TRV
       serial: E84902
-  battery:
-    R1Dh:
-      name: Bedroom TRV battery
-      serial: E84902
