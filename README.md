@@ -1,7 +1,7 @@
 # Lightwave TRV Integration for HomeAssistant
 
 This adds support for Thermostatic Radiator Valves (TRVs) to the LightwaveRF integration into HomeAssistant.  
-This is for Series 1 Lightwave
+This is for Series 1 Lightwave.
 
 ## Getting Started
 
@@ -11,8 +11,17 @@ The proxy captures the TRV broadcast messages, and makes them available to a Hom
 
 ### Installing
 
-Copy this repro to your local machine.
+* github
+```
+git clone https://github.com/ColinRobbins/Homeassistant-Lightwave-TRV.git
+```
+or
+* pip
+```
+pip3 install lw-trv-proxy
+```
 
+### Set up HomeAssistant
 Copy the folder, and all its contents to the HomeAssistant configuration area.
 ```
 cp -r customer_components ~homeassistant/.homeassistant
