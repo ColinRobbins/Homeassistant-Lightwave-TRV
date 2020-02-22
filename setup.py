@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="lw-trv-proxy",
-    version="0.3",
+    version="0.4",
     author="Colin Robbins",
     author_email="colin.john.robbins@gmail.com",
     description="A Lightwave RF Proxy",
@@ -13,8 +13,8 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/ColinRobbins/Homeassistant-Lightwave-TRV",
     entry_points = {
-        'console_scripts': ['lwproxy=lwproxy.lwproxy:main'],
-    }       
+        'console_scripts': ['lwproxy=lwproxy.lwproxy:main']
+    },
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",

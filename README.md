@@ -51,12 +51,12 @@ lightwave:
 The proxy is (by default) configured to run on the same server as HA.
 No configuration should be needed.   Simply run it...
 ```
-python3 lwproxy.py &
+lwproxy &
 ```
-Commandline options:
-* **-v** verbose
-* **-i ip_address** IP addres to run the porcy on.  Default 127.0.0.1
-* **-p port** Port to run the proxy on. Default 7878
+Command line options:
+* ```-v``` verbose
+* ```-i ip_address``` IP addres to run the porcy on.  Default 127.0.0.1
+* ```-p port``` Port to run the proxy on. Default 7878
 
 ## Reboot
 You will need to run this as a service to survive reboots etc.  I've created a ```systemctl``` template service description in ```lwproxy.service```.
