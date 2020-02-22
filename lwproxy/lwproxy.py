@@ -93,12 +93,15 @@ def proxy(proxy_ip, port, verbose):
 
 def main(argv=None):
     """Start the proxy."""
+    if argv is None:
+        argv = sys.argv[1:]
+
     proxy_ip = DEFAULT_PROXY_IP
     proxy_port = DEFAULT_PROXY_PORT
     verbose = False
 
     try:
-        opts, dummy = getopt.getopt(argv[1:], "hvi:p:", ["proxy_ip=", "proxy_port="])
+        opts, dummy = getopt.getopt(argv, "hvi:p:", ["proxy_ip=", "proxy_port="])
     except getopt.GetoptError:
         print("lwproxy.py -i proxy_ip_address -p proxy_port -v")
         sys.exit(2)
@@ -118,4 +121,4 @@ def main(argv=None):
 
 
 if __name__ == "__main__":
-    main(sys.argv)
+    main()
