@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="lw-trv-proxy",
-    version="0.4",
+    version="0.5",
     author="Colin Robbins",
     author_email="colin.john.robbins@gmail.com",
     description="A Lightwave RF Proxy",
