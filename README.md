@@ -22,6 +22,7 @@ pip3 install lw-trv-proxy
 ```
 
 ### Set up HomeAssistant
+(temporary requirement until integrated in HomeAssistant)
 Copy the folder, and all its contents to the HomeAssistant configuration area.
 ```
 cp -r customer_components ~homeassistant/.homeassistant
@@ -45,17 +46,6 @@ lightwave:
       name: Bedroom TRV
       serial: E84902		# Serial number of the TRV - found in the Lightwave App, or web site
 ```
-## lightwave.py
-A modification is required to 
-```
-lib/python3.7/site-packages/lightwave/lightwave.py
-```
-to add TRV support.
-To replace the file...
-```
-sudo cp lightwave/lightwave.py <PATH>/lib/python3.7/site-packages/lightwave/lightwave.py
-```
-Replace ```<PATH>``` to the appropriate HomeAssistant folder.
 
 ## Run the proxy
 The proxy is (by default) configured to run on the same server as HA.
@@ -63,6 +53,12 @@ No configuration should be needed.   Simply run it...
 ```
 python3 lwproxy.py &
 ```
+Commandline options:
+* **-v** verbose
+* **-i ip_address** IP addres to run the porcy on.  Default 127.0.0.1
+* **-p port** Port to run the proxy on. Default 7878
+
+## Reboot
 You will need to run this as a service to survive reboots etc.  I've created a ```systemctl``` template service description in ```lwproxy.service```.
 ## Test
 Restart hass.  (A restart is required, simply re-reading config is not sufficient)
