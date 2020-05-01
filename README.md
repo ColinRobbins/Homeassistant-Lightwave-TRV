@@ -15,7 +15,6 @@ The proxy captures the TRV broadcast messages, and makes them available to a Hom
 ```
 git clone https://github.com/ColinRobbins/Homeassistant-Lightwave-TRV.git
 ```
-or
 * pip
 ```
 pip3 install lw-trv-proxy
@@ -36,7 +35,7 @@ lwproxy &
 ```
 Command line options:
 * ```-v``` verbose
-* ```-i ip_address``` IP addres to run the porcy on.  Default 127.0.0.1
+* ```-i ip_address``` IP addres to run the proxy on.  Default 127.0.0.1
 * ```-p port``` Port to run the proxy on. Default 7878
 
 ## Reboot
