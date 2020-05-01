@@ -1,6 +1,6 @@
 # Lightwave TRV Integration for HomeAssistant
 
-This adds support for Thermostatic Radiator Valves (TRVs) to the LightwaveRF integration into HomeAssistant.  
+This adds support for Thermostatic Radiator Valves (TRVs) to the LightwaveRF integration into HomeAssistant.
 This is for Series 1 Lightwave.
 
 ## Getting Started
@@ -21,34 +21,15 @@ or
 pip3 install lw-trv-proxy
 ```
 
-### Set up HomeAssistant
-(temporary requirement until integrated in HomeAssistant)
-Copy the folder, and all its contents to the HomeAssistant configuration area.
-```
-cp -r customer_components ~homeassistant/.homeassistant
-```
+### Requirement
+HomeAssistant 0.109 or greater
 
 
 ## Configuration
-The TRV broadcasts its status with the device serial number as the only identifier.
-This needs to be put into the HA configuration file.
-The file *sample_configuration.yaml* gives an example.
-```
-lightwave:
-  host: 192.168.10.10    	# Lightwave Hub
-  trv_proxy_ip: 127.0.0.1       # Proxy address, do not change unless running on a different server
-  trv_proxy_port: 7878		# Do not change, unless a port clash
-  lights:
-    R99D1:
-      name: Bedroom Light
-  trv:				
-    R1Dh:			# The ID of the TRV.  
-      name: Bedroom TRV
-      serial: E84902		# Serial number of the TRV - found in the Lightwave App, or web site
-```
+See [HomeAssistant/Lightwave])https://www.home-assistant.io/integrations/lightwave/)
 
 ## Run the proxy
-The proxy is (by default) configured to run on the same server as HA.
+The proxy is (by default) configured to run on the same server as HomeAssistant.
 No configuration should be needed.   Simply run it...
 ```
 lwproxy &
