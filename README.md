@@ -26,7 +26,7 @@ HomeAssistant 0.109 or greater
 
 
 ## Configuration
-See [HomeAssistant/Lightwave])https://www.home-assistant.io/integrations/lightwave/)
+See [HomeAssistant/Lightwave](https://www.home-assistant.io/integrations/lightwave/)
 
 ## Run the proxy
 The proxy is (by default) configured to run on the same server as HomeAssistant.
