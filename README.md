@@ -6,8 +6,7 @@ This is for Series 1 Lightwave.
 ## Getting Started
 
 Lightwave does not provide an interface, via the API, to query the Lightwave Hub for the current TRV status.  Instead the status is broadcast to the LAN.
-Thus this integration comes in two components.  A HomeAssistant custom configurations, and a proxy.
-The proxy captures the TRV broadcast messages, and makes them available to a HomeAssistant polling loop.
+This proxy captures the TRV broadcast messages, and makes them available to a HomeAssistant polling loop.
 
 ### Installing
 
