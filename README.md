@@ -3,6 +3,8 @@
 This adds support for Thermostatic Radiator Valves (TRVs) to the LightwaveRF integration into HomeAssistant.
 This is for Series 1 Lightwave.
 
+*** FROM HOME ASSISTANT 2023.2.0 A PROXY IS NO LONGER NEEDED ***
+
 ## Getting Started
 
 Lightwave does not provide an interface, via the API, to query the Lightwave Hub for the current TRV status.  Instead the status is broadcast to the LAN.
